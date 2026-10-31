@@ -1,0 +1,55 @@
+{
+  "checked_on": "2026-10-16",
+  "method": "Primary landing-page or PDF retrieval; title and author cross-check. Not independent verification of every source result.",
+  "references": [
+    {
+      "key": "perdomo",
+      "url": "https://proceedings.mlr.press/v119/perdomo20a.html",
+      "title": "Performative Prediction",
+      "year": 2020,
+      "status": "resolved and bibliographic match"
+    },
+    {
+      "key": "shazeer",
+      "url": "https://arxiv.org/abs/1701.06538",
+      "title": "Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer",
+      "year": 2017,
+      "status": "resolved and bibliographic match"
+    },
+    {
+      "key": "dowhy",
+      "url": "https://arxiv.org/abs/2011.04216",
+      "title": "DoWhy: An End-to-End Library for Causal Inference",
+      "year": 2020,
+      "status": "resolved and bibliographic match"
+    },
+    {
+      "key": "abides",
+      "url": "https://arxiv.org/abs/1904.12066",
+      "title": "ABIDES: Towards High-Fidelity Market Simulation for AI Research",
+      "year": 2019,
+      "status": "resolved and bibliographic match"
+    },
+    {
+      "key": "narang",
+      "url": "https://arxiv.org/abs/2201.03398",
+      "title": "Multiplayer Performative Prediction: Learning in Decision-Dependent Games",
+      "year": 2022,
+      "status": "resolved and bibliographic match"
+    },
+    {
+      "key": "thurner",
+      "url": "https://arxiv.org/abs/0908.1555",
+      "title": "Leverage Causes Fat Tails and Clustered Volatility",
+      "year": 2009,
+      "status": "resolved and bibliographic match"
+    },
+    {
+      "key": "kirilenko",
+      "url": "https://www.cftc.gov/sites/default/files/idc/groups/public/@economicanalysis/documents/file/oce_flashcrash0314.pdf",
+      "title": "The Flash Crash: The Impact of High Frequency Trading on an Electronic Market",
+      "year": 2014,
+      "status": "resolved and bibliographic match"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Please cite the manuscript when using this research package."
+title: "Market Transitions under AI Financial Models: Alpha Decay, Instability, and Evidence-Gated Neuro-Symbolic Adaptation"
+authors:
+  - family-names: "Olapade"
+    given-names: "Timilehin"
+version: "1.0-review"
+date-released: "2026-10-16"
+type: software

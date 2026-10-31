@@ -1,0 +1,17 @@
+[
+  {
+    "contrast": "evidence_gate - ungated",
+    "grid_mean": 0.011961555826623015,
+    "mcse": 0.0005662935746484002
+  },
+  {
+    "contrast": "evidence_gate - risk_only",
+    "grid_mean": 0.004737378559506273,
+    "mcse": 0.000376456853805626
+  },
+  {
+    "contrast": "wrong_evidence - evidence_gate",
+    "grid_mean": 0.04004357369210825,
+    "mcse": 0.002371002714515497
+  }
+]

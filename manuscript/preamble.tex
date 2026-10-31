@@ -1,0 +1,41 @@
+% !TeX root = ../main.tex
+% Shared packages and definitions only; compile the root main.tex.
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern,microtype}
+\usepackage[left=15mm,right=15mm,top=25mm,bottom=18mm,headsep=8mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,longtable,array,tabularx,multirow}
+\usepackage{graphicx,float,placeins,xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc}
+\usepackage{enumitem,listings,fancyhdr,hyperref,hyperxmp,titlesec}
+\definecolor{navy}{HTML}{16354B}
+\definecolor{teal}{HTML}{167A89}
+\definecolor{gold}{HTML}{BD713A}
+\definecolor{pale}{HTML}{EEF3F5}
+\hypersetup{keeppdfinfo=true,colorlinks=true,linkcolor=navy,urlcolor=teal,citecolor=navy,pdfauthor={Timilehin Olapade},pdftitle={Market Transitions under AI Financial Models: Alpha Decay, Instability, and Evidence-Gated Neuro-Symbolic Adaptation},pdfsubject={Reproducible synthetic research on market feedback and CMTF},pdfkeywords={CMTF, neuro-symbolic learning, AI financial models, market stability, alpha decay, mixtures of experts},pdflang={en-US}}
+\titleformat{\section}{\normalfont\fontsize{14.4}{17.3}\selectfont\bfseries\color{navy}}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{12}{14.4}\selectfont\bfseries}{\thesubsection}{1em}{}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small CMTF \,|\, Market transitions}
+\fancyhead[R]{\small\edition}
+\fancyfoot[C]{\thepage}
+\setlist{nosep,leftmargin=1.5em}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newcommand{\E}{\mathbb E}
+\newcommand{\R}{\mathbb R}
+\newcommand{\ind}{\mathbf 1}
+\newcommand{\given}{\,\vert\,}
+\newcommand{\plain}[1]{\par\textbf{In plain English.} #1\par}
+\newcommand{\status}[1]{\par\smallskip\noindent\colorbox{pale}{\parbox{\dimexpr\linewidth-2\fboxsep}{\small #1}}\par\smallskip}
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\lstset{language=Python,basicstyle=\ttfamily\footnotesize,keywordstyle=\color{navy}\bfseries,commentstyle=\color{teal},stringstyle=\color{gold},breaklines=true,columns=fullflexible,keepspaces=true,showstringspaces=false,numbers=left,numberstyle=\tiny\color{gray},numbersep=7pt,frame=single,rulecolor=\color{black!15},xleftmargin=12pt,framexleftmargin=3pt,tabsize=4}
+\newcommand{\researchtitle}{Market Transitions under AI Financial Models:\\Alpha Decay, Instability, and Evidence-Gated Neuro-Symbolic Adaptation}
+\author{Timilehin Olapade}
+\title{Market Transitions under AI Financial Models}

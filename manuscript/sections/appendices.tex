@@ -1,0 +1,252 @@
+\clearpage
+\appendix
+\section{Notation and an accessible reading guide}
+The main text separates the economic question from the small experiments. This appendix expands the mathematical objects and shows how they map to code. Similar notation in different experiments does not imply shared data or a shared trained model.
+
+\begin{longtable}{p{.14\linewidth}p{.2\linewidth}p{.58\linewidth}}
+\toprule Symbol & Type or shape & Meaning\\\midrule\endfirsthead
+\toprule Symbol & Type or shape & Meaning\\\midrule\endhead
+\bottomrule\endfoot
+$t$ & Integer & Decision or simulation time index; not a calibrated clock interval.\\
+$\mathcal F_t$ & Information set & All versions of observations genuinely available before the action at $t$.\\
+$z_t$ & Categorical scalar & Latent mechanism state. Two states in public experiments; this is not the proprietary regime implementation.\\
+$q_t$ & Probability vector in $\R^K$ & Filtered probabilities over $K$ states; entries nonnegative and sum to one.\\
+$A$ & $K\times K$ matrix & Transition probabilities; each row sums to one.\\
+$\theta_k$ & Real scalar & Structural slope in state $k$ in Experiment I. Theta is a coefficient, not a return.\\
+$\tau_k$ & Scalar or declared vector & Tau denotes a target causal effect under a specified intervention, horizon, and model.\\
+$\alpha$ & Real scalar & Alpha is benchmark-adjusted excess return, dependent on the benchmark and cost definition.\\
+$\boldsymbol\beta$ & Vector in $\R^d$ & Beta denotes factor exposure in the alpha regression.\\
+$\phi$ & Scalar in $[0,1]$ & Phi is the public simulator's market-coupling intervention.\\
+$\rho$ & Scalar in $[0,1]$ & Rho correlates participant measurement errors.\\
+$\eta$ & Scalar in $(0,1]$ & Eta is the adjustment fraction toward target position.\\
+$\ell$ & Positive scalar & Ell is the target leverage multiplier.\\
+$\lambda$ & Positive scalar & Lambda scales price impact from mean model flow.\\
+$\kappa$ & Positive scalar & Kappa scales background restoring pressure.\\
+$\sigma$ & Positive scalar & Sigma denotes standard deviation.\\
+$\mu_k$ & Real scalar & Mu is the emission mean associated with state $k$.\\
+$\varepsilon_t$ & Real disturbance & Epsilon denotes residual variation; it is not automatically independent in a real market.\\
+$\Pi$ & Population specification & Capital pi denotes participant policies, capital allocation, and shared constraints.\\
+$p_t,F_t$ & Real scalars & Log market price and log fundamental proxy, respectively.\\
+$D_t$ & Scalar in $[0.12,1]$ & Normalized depth proxy in the released model.\\
+$h_{it},\Delta h_{it}$ & Real scalars & Shares held and shares traded by modeled participant $i$.\\
+$w_{kt}$ & Probability-like weight & Normalized routing weight, not a posterior causal probability.\\
+$g_{kt}$ & Boolean & Eligibility indicator. A valid record can still encode a false assumption.\\
+$R,N,T$ & Positive integers & Replications, participants per replication, and time steps.\\
+\end{longtable}
+
+\subsection{Reading the central claim without equations}
+The system is designed to adapt when its explanation of a market relationship becomes doubtful. That is a sensible design objective, but the action taken matters. Reducing exposure may protect the system; if everyone does it together, available liquidity may deteriorate. A record explaining why a model withdrew helps investigate that mechanism but does not prove that the withdrawal was economically optimal.
+
+A model can also be accurate about direction yet unprofitable. If many participants already act on the same information, the price available at execution can remove the expected gain. Fees, spread, impact, financing, and repeated revisions further reduce returns. This is why a potential improvement in forecast MSE must not be presented as a percentage improvement in investment accuracy or alpha.
+
+The two completed experiments answer limited questions. The first asks whether state uncertainty and causal confounding are distinct. The second asks whether a simple feedback mechanism can make forecast quality, participant returns, and market recovery disagree. The intended larger paper would estimate these relationships in richer, calibrated environments. The present release gives reviewers working code and explicit assumptions with which to challenge the argument.
+
+\section{Derivations for the structural diagnostic}
+\subsection{Why omitted confounding remains after perfect regime detection}
+Within a known state, the structural equations are $X=C+U^X$ and $Y=\theta X+2C+U^Y$. Independence and unit variances give
+\[
+\operatorname{Var}(X)=\operatorname{Var}(C)+\operatorname{Var}(U^X)=2,\qquad
+\operatorname{Cov}(X,C)=1.
+\]
+The population unadjusted regression slope is
+\begin{align*}
+\frac{\operatorname{Cov}(X,Y)}{\operatorname{Var}(X)}
+&=\frac{\theta\operatorname{Var}(X)+2\operatorname{Cov}(X,C)
++\operatorname{Cov}(X,U^Y)}{\operatorname{Var}(X)}\\
+&=\theta+\frac{2}{2}=\theta+1.
+\end{align*}
+Even with the true state, the unadjusted slope is biased upward by one. This explains why oracle state selection in the hidden-confounder setting still has substantial error. The calculation relies on the specified synthetic independence assumptions and does not transfer automatically to financial data.
+
+If $C$ is observed and the linear specification is correct, regressing $Y$ on an intercept, $X$, and $C$ can isolate $\theta$. The design matrix has shape $n\times3$; the fitted coefficient vector has length three. The Python function \code{slope} returns index one, the coefficient on $X$. This function estimates a conditional slope; it does not search for a valid adjustment set.
+
+\subsection{Filtering step by step}
+Suppose $q_{t-1}$ is the preceding state-probability row vector. First predict:
+\[
+\widetilde q_t=q_{t-1}A.
+\]
+Next compute a likelihood for the newly available emission:
+\[
+\ell_{tk}\propto\exp\left[-\tfrac12\{(M_t-\mu_k)/1.3\}^2\right].
+\]
+Then multiply and normalize:
+\[
+q_t(k)=\frac{\widetilde q_t(k)\ell_{tk}}
+{\sum_j\widetilde q_t(j)\ell_{tj}}.
+\]
+The denominator must be positive and finite. The implementation subtracts the largest log-likelihood before exponentiation to reduce underflow. In Experiment I, the initial observation uses the initial prior directly. In Experiment II, a symmetric transition from the initial $0.5$ prior yields the same prediction.
+
+Only past and current emissions enter filtering. Retrospectively smoothing an entire sequence would allow later observations to revise an earlier state estimate. A point-in-time trading backtest must not use that revised estimate as if it had existed at the earlier decision.
+
+\subsection{Why posterior averaging helps squared loss under correct assumptions}
+Let a random coefficient $\Theta$ have a conditional distribution given information $\mathcal F$. For any estimate $a$,
+\[
+\E[(\Theta-a)^2\mid\mathcal F]
+=\operatorname{Var}(\Theta\mid\mathcal F)
++\{\E[\Theta\mid\mathcal F]-a\}^2.
+\]
+The first term does not depend on $a$; the second is minimized at the posterior mean. If state-specific coefficients are known and $q$ is correct, that mean is $\sum_k q(k)\theta_k$.
+
+The result is conditional on the correct distribution. It does not imply that an estimated or misspecified posterior is optimal. Nor does it imply optimality for absolute error, directional classification, or expected trading utility. For absolute loss, a conditional median minimizes risk. With a two-point coefficient distribution, selecting the more probable point can therefore outperform its mean under MAE while losing under MSE.
+
+\subsection{Inactive mechanisms and probability mass}
+If state one has coefficient zero, then a posterior-weighted coefficient is $q(0)\theta_0+q(1)\cdot0$. Both state probabilities remain meaningful. Setting the entire conditional distribution of outcomes to zero would violate normalization. A mechanism can have no marginal response to a particular intervention while the market continues to produce outcomes through other variables and disturbances.
+
+\section{The public market simulator as executable mathematics}
+\subsection{Array shapes and causal order}
+Innovations are generated before the factorial loops so configurations receive the same exogenous paths. The macro surprise, emission noise, latent transitions, common error, and outcome noise have shape $(T,R)$. Private measurement errors and timeliness flags have shape $(T,R,N)$. Position, cash, and forecast-error state have shape $(R,N)$; price, fundamental proxy, and depth have shape $(R,)$.
+
+At each step the program performs the following sequence:
+\begin{enumerate}
+\item Advance the latent environment state and reveal the current public emission and noisy macro measurement.
+\item Update the filtered posterior from available emissions.
+\item Compute neural proposals and eligibility from current information and lagged error.
+\item Form targets using wealth and depth known before the order.
+\item Adjust positions and calculate signed order flow.
+\item Update fundamental value, order impact, and market price.
+\item Execute at the stated midpoint rule, charge costs, and mark wealth.
+\item Update depth, scored event counters, and recovery.
+\item Reveal the outcome proxy and update the error state for the next step.
+\end{enumerate}
+This ordering prevents the current realized outcome from controlling the current gate. A prefix-invariance test changes future innovations and verifies that earlier paths do not change.
+
+\subsection{Neural model and training}
+For an input $x$, the hidden vector is
+\[
+\mathbf h(x)=(1,\tanh(w_1x+b_1),\ldots,\tanh(w_{12}x+b_{12}))\in\R^{13}.
+\]
+Weights and biases of the hidden features are randomly sampled with seed 1806. The design matrix $H$ has shape $4096\times13$, and targets $Y$ have shape $4096\times2$. The fitted output matrix is
+\[
+V=(H^\top H+0.01I)^{-1}H^\top Y\in\R^{13\times2},
+\]
+implemented with a linear solve rather than explicit inversion. Predictions are $H_{\mathrm{test}}V$. The ridge penalty includes the intercept in this reference program.
+
+This is a genuine fitted nonlinear feature model, but only its output layer is trained. Hidden features do not learn macroeconomic representations, and there is no transfer from a pretrained foundation model. A more capable model could change every numerical result; it would still require the same claim boundaries.
+
+\subsection{Measurement similarity}
+Participant $i$ receives
+\[
+\widetilde x_{it}=x_t+0.35\{\sqrt\rho\,e^c_t+\sqrt{1-\rho}\,e^i_t\}.
+\]
+The common and individual disturbances are independent standard normals. Each measurement error has variance $0.35^2$ regardless of $\rho$, while two participants' errors have correlation $\rho$. The intervention changes shared error without changing its marginal variance. Actual action correlation is measured from order signs and is not assumed equal to $\rho$ after nonlinear policies.
+
+\subsection{Target formation and withdrawal}
+The macro signal is $\tanh(\widehat y_{it})$. The momentum signal is $\tanh(\Delta p_{t-1}/0.008+0.1e_{it})$. They receive equal weights. Eligible signal is passed through $\tanh(1.5s)$, multiplied by leverage and the optional liquidity cap, and converted from wealth exposure to shares using the current price.
+
+Wealth at or below 0.5 triggers a zero target. The calculation also uses a minimum wealth of 0.01 before this target is zeroed. This is a simplified stop mechanism, not a legal margin model or a guarantee against insolvency. Ineligibility produces gradual withdrawal when $\eta<1$, not instantaneous zero exposure.
+
+The metric called \code{coverage} in the result file is the fraction of records satisfying the diagnostic eligibility checks. The checks are computed for every policy, including policies that ignore them. It is therefore an eligibility-audit rate, not the executed-trade fraction. Turnover and resulting positions are different objects.
+
+\subsection{Self-financing identity}
+Write $P^-$ and $P^+$ for prices before and after the market update, $h^-$ for old shares, and $u$ for new flow. Execution is $P^e=(P^-+P^+)/2$, and cost is $c$. If old cash is $B^-$, then
+\[
+B^+=B^- -uP^e-c,\qquad h^+=h^-+u.
+\]
+The change in marked wealth is
+\begin{align*}
+W^+-W^-&=B^++h^+P^+-(B^-+h^-P^-)\\
+&=h^-(P^+-P^-)+u(P^+-P^e)-c\\
+&=(h^-+\tfrac12u)(P^+-P^-)-c.
+\end{align*}
+This is an algebraic check on the specified midpoint convention. It does not make the execution convention realistic. Changing to pre-trade, post-trade, or order-book fills would change profit allocation.
+
+The scored return uses wealth immediately after step 59 as the opening value and terminal wealth after liquidation costs as the closing value. Steps 60 through 359 contribute scored costs and diagnostics. Drawdown includes terminal liquidation cost. The clipping counter covers all 360 steps because early numerical boundaries can affect later state.
+
+\subsection{Events and censored time}
+For absolute dislocation, increment a counter when $|p_t-F_t|\ge0.10$ and reset it otherwise. Set the event indicator when the counter reaches five. The downside version uses $p_t-F_t\le-0.10$. Price drawdown is measured from a running scored-period price maximum initialized at the last burn-in price.
+
+Recovery begins monitoring at step 180 even in the no-shock comparator. Thus it is a post-designated-time normalization diagnostic, not exclusively a recovery time conditional on a prior stress event. The stored value $-1$ means no observed recovery. It must not be averaged as a negative duration. Conditional recovery means would select on recovery; a survival analysis should retain censoring explicitly.
+
+\subsection{Complexity and replication}
+With hidden dimension $H$, forecasting costs $O(TRNH)$ per configuration and state storage is $O(RN)$, excluding presampled innovations. Innovation storage is $O(TRN)$. A grid of $G$ configurations costs $O(GTRNH)$. The structural study is linear in sample count for a fixed two-state filter and small regression dimension.
+
+The implementation vectorizes replications and participants, not time, because the process is sequential. No GPU or broker service is required. Increasing the replication count improves Monte Carlo precision but cannot fix a misspecified market model.
+
+\section{Statistical interpretation and decision rules}
+\subsection{Monte Carlo uncertainty}
+For replication outcomes $Y_1,\ldots,Y_R$, report $\bar Y=R^{-1}\sum_rY_r$ and $\operatorname{MCSE}(\bar Y)=s_Y/\sqrt R$. For paired policies use $D_r=Y_r^{(1)}-Y_r^{(0)}$ and calculate $s_D/\sqrt R$. Reusing common shocks often reduces the variance of a comparison, but does not justify treating the two policies as independent samples.
+
+A grid average requires preserving cross-configuration dependence. The reporting program first averages each paired contrast within replication across grid settings, then computes uncertainty across the 64 replication indices. Averaging 4,096 nominally separate paths and dividing by $\sqrt{4096}$ would overstate independent information.
+
+Binary event rates at zero need special care. With zero events in $R$ independent replications of a fixed configuration, an exact one-sided 95\% upper bound is $1-0.05^{1/R}$, about 4.57\% for $R=64$. A zero standard error from a plug-in Bernoulli variance is not a proof that risk is absent.
+
+\subsection{Predeclared extensions that can refute the intended benefits}
+Before a larger evaluation, freeze the simulator version, intervention grid, model checkpoints, event thresholds, benchmark factors, and primary contrasts. Allocate separate seeds for development and evaluation. A favorable configuration discovered during development must be evaluated again on untouched seeds and environments.
+
+Three results would materially weaken a claimed CMTF advantage. First, a risk-only or randomized withdrawal control could explain the entire return improvement. Second, causal misspecification could cause losses comparable to or worse than a predictive baseline. Third, individually safer behavior could systematically slow liquidity recovery or increase tail spillovers. The manuscript already contains restricted examples of the first two concerns and a recovery conflict.
+
+Three stronger results would support the intended claim. Evidence selection could improve forecast loss at matched information and exposure; that improvement could survive realistic costs and independent episodes; and systemic outcomes could remain acceptable across diverse participant populations. These are empirical requirements, not assumed properties of interpretability.
+
+\section{Protocol for the next full market study}
+\subsection{Population and intervention matrix}
+A controlled population should include at least one passive fundamental supplier, one liquidity-providing strategy with inventory limits, one trend-sensitive strategy, one purely predictive learned model, and the CMTF participant. Each needs documented observations, objective, action space, risk limits, training data, and execution rules. Different capital weights should be tested without silently changing aggregate funding.
+
+Vary capital share, count of independently trained models, training-data overlap, architecture overlap, and common risk thresholds separately. Similar model families can make different decisions, while distinct architectures can share the same crowded signal. Similarity should be measured at forecast, position, and order levels.
+
+At fixed population, cross external shocks with leverage, depth replenishment, funding constraints, and adaptation policies. A model can initiate dislocation without an external shock, amplify a shock, or supply stabilizing liquidity afterward. These are different causal contrasts and should not be collapsed into a single average return.
+
+\subsection{Alpha decay, capacity, and turnover}
+Choose a tradable benchmark and estimate net alpha using only evaluation periods. Report gross return, fees, spread, impact, financing, model-service cost, and net return separately. Include uncertainty about benchmark exposure and avoid choosing factors after inspecting the favored model's result.
+
+A capacity curve evaluates net performance as allocated capital increases, with other conditions held fixed where possible. An imitation curve increases competing capital acting on the same information. A temporal decay curve holds the trained signal fixed and evaluates it across later regimes. These curves answer different questions; all can be called alpha decay informally, but the paper should label them precisely.
+
+A useful hypothesis is that mechanism-conditioned selection changes the slope of one of these curves. Test it against a model with identical retraining budget and risk controls. Allow the hypothesis to fail if ordinary volatility targeting or lower turnover explains the difference.
+
+\subsection{Operating rate and adaptation cost}
+Use separate controls for information sampling, inference time, policy refresh, order placement, and parameter learning. Express each in the calibrated simulator's clock. Hold total computation budget fixed in one comparison and remove that constraint in another. An apparent accuracy gain from more computation is different from a better adaptation rule.
+
+Measure reaction delay after a known mechanism change, false adaptation during stable conditions, transient inventory accumulation, and execution slippage. If rapid adaptation increases churn, include its cost rather than reporting only a shorter detection delay. If the system delays action because its evidence is incomplete, log that reason and evaluate the economic consequence.
+
+\subsection{Crash contribution and recovery}
+Distinguish the fundamental shock from endogenous price displacement. A price decline following lower fundamental value can be efficient repricing rather than instability. Measure forced sales, spread, depth, cancellation, price impact, and cross-asset contagion separately where the simulator supports them.
+
+For recovery, prespecify both the reference level and persistence condition. Returning to the pre-shock price is inappropriate if the shock permanently changes value. Report recovery to the new reference, restoration of liquidity, and normalization of volatility. Retain episodes that do not recover before the simulation ends.
+
+\subsection{Interpretability validation}
+A reviewer should be able to select a decision, reconstruct the available data, inspect the claimed mechanism, rerun eligibility, and reproduce the target. An explanation that cannot be traced to inputs is not a reproducibility artifact.
+
+Counterfactual tests should alter one declared condition at a time. Expire a record, reverse a mechanism sign, change a valid state probability, introduce a conflicting expert, or remove provenance. Check whether the resulting rejection, weight change, or abstention agrees with the interface contract. Then measure whether the changed order has the expected market effect in the simulator.
+
+Human readability remains valuable, but the assessment should not reward eloquence over correctness. Compare explanations with the actual executed action, including situations where a risk layer overrides the proposal.
+
+\section{Reproduction and reviewer workflow}
+The public source package can be opened as a normal LaTeX project. Set the working directory to \code{manuscript} and compile \code{main.tex} with pdfLaTeX or latexmk. All figure PDFs and generated tables are included, so compiling does not require running the experiments.
+
+To regenerate results, create a Python environment from \code{requirements.txt}, then run \code{make reproduce} from the package root. The workflow runs tests, both experiments, numerical sensitivity, and figure/table generation. \code{make pdf} compiles the manuscript afterward. Source and result hashes in the release manifest support integrity checking.
+
+The tests verify temporal eligibility, sign-aware routing, abstention, finite normalization, duplicate identifiers, path repeatability, future-prefix invariance, policy-independent market paths when participation is zero, and a self-financing accounting identity. Passing these checks is evidence of those properties, not proof of model validity.
+
+Review the compact findings before the exhaustive tables. The tables intentionally retain every grid configuration and adverse outcome. Replication-level files allow alternative summaries without reconstructing values from plotted images. The code listings are included for review convenience; executable files are authoritative for rerunning the release.
+
+\clearpage
+\section{Complete structural-estimation results}
+\input{manuscript/sections/synthetic_full.tex}
+\clearpage
+\section{Complete market results: wealth and liquidity}
+\input{manuscript/sections/full_returns.tex}
+\clearpage
+\section{Complete market results: stress and recovery}
+\input{manuscript/sections/full_events.tex}
+\clearpage
+\section{Complete paired return contrasts}
+\input{manuscript/sections/full_pairs.tex}
+\clearpage
+\section{Reference implementation: declared evidence routing}
+This standalone interface checks supplied declarations. It is not an identification engine. Its cost is linear in expert count for admission, normalization, and output construction.
+\lstinputlisting{code/evidence_router.py}
+\clearpage
+\section{Reference implementation: structural diagnostic}
+The two-state filter and regression use synthetic observations only. Oracle inputs and seed rules are explicit in the source.
+\lstinputlisting{code/synthetic_study.py}
+\clearpage
+\section{Reference implementation: interactive market}
+The program defines the full reduced-form environment and primary experiment. It makes no external service calls.
+\lstinputlisting{code/market_study.py}
+\clearpage
+\section{Reference implementation: sensitivity and reporting}
+The cap sensitivity was added during the audit to expose numerical-boundary dependence. The reporting script reads result files and writes the manuscript's numerical tables and vector figures.
+\lstinputlisting{code/sensitivity.py}
+\lstinputlisting{code/build_figures.py}
+\section{Reference implementation: validation tests}
+\lstinputlisting{tests/test_router.py}
+\lstinputlisting{tests/test_market.py}
+

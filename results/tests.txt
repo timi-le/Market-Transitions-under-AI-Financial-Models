@@ -1,0 +1,14 @@
+test_future_innovations_cannot_change_past (test_market.MarketTests.test_future_innovations_cannot_change_past) ... ok
+test_repeatability_and_finiteness (test_market.MarketTests.test_repeatability_and_finiteness) ... ok
+test_self_financing_midpoint_identity (test_market.MarketTests.test_self_financing_midpoint_identity) ... ok
+test_zero_participation_market_is_policy_invariant (test_market.MarketTests.test_zero_participation_market_is_policy_invariant) ... ok
+test_duplicates_rejected (test_router.RouterContract.test_duplicates_rejected) ... ok
+test_empty_abstains (test_router.RouterContract.test_empty_abstains) ... ok
+test_invalid_evidence_abstains (test_router.RouterContract.test_invalid_evidence_abstains) ... ok
+test_large_logits_do_not_overflow (test_router.RouterContract.test_large_logits_do_not_overflow) ... ok
+test_negative_response_favors_short (test_router.RouterContract.test_negative_response_favors_short) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.112s
+
+OK

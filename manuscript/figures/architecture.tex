@@ -1,0 +1,24 @@
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}[node distance=8mm and 10mm,box/.style={draw=navy,rounded corners=2pt,fill=pale,align=center,text width=5.2cm,minimum height=13mm,font=\small\hyphenpenalty=10000\exhyphenpenalty=10000},arr/.style={-{Latex[length=2mm]},thick,draw=navy}]
+\node[box] (data) {Point-in-time observations\\Versions, release times, provenance};
+\node[box,right=of data] (scm) {CMTF mechanism registry\\Estimands, assumptions, applicability};
+\node[box,below=of data] (neural) {Neural proposals\\Forecast, direction, uncertainty};
+\node[box,below=of scm] (gate) {Symbolic eligibility\\Timing, validity, declared support};
+\node[box,below=of neural] (route) {Regime-conditioned routing\\Eligible weights or abstention};
+\node[box,below=of gate] (risk) {Position and execution constraints\\Order admission and sizing};
+\node[box,below=of route] (market) {Market interaction\\Impact, liquidity, other models};
+\node[box,below=of risk] (audit) {Decision and outcome record\\Replay, rejection reasons, revision};
+\draw[arr] (data)--(neural);
+\draw[arr] (scm)--(gate);
+\draw[arr] (neural)--(gate);
+\draw[arr] (neural)--(route);
+\draw[arr] (gate)--(route);
+\draw[arr] (route)--(risk);
+\draw[arr] (risk)--(market);
+\draw[arr] (market)--(audit);
+\draw[arr] (risk)--(audit);
+\draw[arr] (audit.east)--++(.6,0)|-(scm.east);
+\end{tikzpicture}
+\caption{Conceptual CMTF interface and market feedback. This diagram specifies the proposed architecture. The released programs implement distinct subsets, not the complete production stack.}
+\end{figure}
+

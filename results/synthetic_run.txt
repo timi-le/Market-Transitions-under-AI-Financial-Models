@@ -1,0 +1,43 @@
+              scenario                      method  mean_mse   sd_mse  mean_mae  replicates  mcse_mse
+   Observed confounder           Pooled unadjusted  2.047845 0.506886  1.059218         200  0.035842
+   Observed confounder Pooled available adjustment  1.024985 0.067173  1.001519         200  0.004750
+   Observed confounder          Filtered hard gate  0.503279 0.093914  0.272642         200  0.006641
+   Observed confounder          Filtered soft gate  0.373368 0.058655  0.374484         200  0.004148
+   Observed confounder           Oracle state gate  0.000968 0.001009  0.024400         200  0.000071
+     Hidden confounder           Pooled unadjusted  2.047845 0.506886  1.059218         200  0.035842
+     Hidden confounder Pooled available adjustment  2.047845 0.506886  1.059218         200  0.035842
+     Hidden confounder          Filtered hard gate  1.497117 0.138104  1.124327         200  0.009765
+     Hidden confounder          Filtered soft gate  1.365132 0.136847  1.057630         200  0.009677
+     Hidden confounder           Oracle state gate  1.003865 0.055980  1.001195         200  0.003958
+        Emission shift           Pooled unadjusted  2.047845 0.506886  1.059218         200  0.035842
+        Emission shift Pooled available adjustment  1.024985 0.067173  1.001519         200  0.004750
+        Emission shift          Filtered hard gate  3.500872 0.134154  1.753581         200  0.009486
+        Emission shift          Filtered soft gate  2.890335 0.119385  1.629962         200  0.008442
+        Emission shift           Oracle state gate  0.000968 0.001009  0.024400         200  0.000071
+Inactive second regime           Pooled unadjusted  1.269833 0.253876  1.006652         200  0.017952
+Inactive second regime Pooled available adjustment  0.256786 0.018195  0.500810         200  0.001287
+Inactive second regime          Filtered hard gate  0.126419 0.023923  0.146937         200  0.001692
+Inactive second regime          Filtered soft gate  0.093935 0.014707  0.190108         200  0.001040
+Inactive second regime           Oracle state gate  0.000968 0.001009  0.024400         200  0.000071
+[
+  {
+    "scenario": "Observed confounder",
+    "hard_minus_soft_mse": 0.12991121510748516,
+    "paired_mcse": 0.002848642635580781
+  },
+  {
+    "scenario": "Hidden confounder",
+    "hard_minus_soft_mse": 0.13198444018907043,
+    "paired_mcse": 0.005206534257714109
+  },
+  {
+    "scenario": "Emission shift",
+    "hard_minus_soft_mse": 0.6105364124274146,
+    "paired_mcse": 0.003371273236228475
+  },
+  {
+    "scenario": "Inactive second regime",
+    "hard_minus_soft_mse": 0.032483915524105636,
+    "paired_mcse": 0.000782627325136484
+  }
+]

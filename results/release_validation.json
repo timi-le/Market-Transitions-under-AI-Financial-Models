@@ -1,0 +1,33 @@
+{
+  "result": "passed",
+  "checks": [
+    "primary grid shape",
+    "finite outcomes",
+    "depth bounds",
+    "eligibility bounds",
+    "negative grid-average returns retained",
+    "structural study shape",
+    "nonnegative losses",
+    "reference coefficient MSE",
+    "summary arithmetic",
+    "PDF author/title/XMP/text/cross references"
+  ],
+  "pdfs": [
+    {
+      "file": "manuscript.pdf",
+      "pages": 50,
+      "author": "Timilehin Olapade",
+      "title": "Market Transitions under AI Financial Models: Alpha Decay, Instability, and Evidence-Gated Neuro-Symbolic Adaptation",
+      "external_links": [
+        "https://arxiv.org/abs/0908.1555",
+        "https://arxiv.org/abs/1701.06538",
+        "https://arxiv.org/abs/1904.12066",
+        "https://arxiv.org/abs/2011.04216",
+        "https://arxiv.org/abs/2201.03398",
+        "https://proceedings.mlr.press/v119/perdomo20a.html",
+        "https://www.cftc.gov/sites/default/files/idc/groups/public/@economicanalysis/documents/file/oce_flashcrash0314.pdf"
+      ]
+    }
+  ],
+  "scope": "Computational and document checks; not independent scientific peer review or broker-account verification."
+}

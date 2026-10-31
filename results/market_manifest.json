@@ -1,0 +1,57 @@
+{
+  "config": {
+    "seed": 20260920,
+    "replicates": 64,
+    "participants": 24,
+    "steps": 360,
+    "burn": 60,
+    "shock_at": 180,
+    "kappa": 0.06,
+    "impact": 0.012,
+    "fee": 0.0002,
+    "spread": 0.0005,
+    "stress_threshold": 0.1,
+    "persistence": 5,
+    "recovery_band": 0.02,
+    "minimum_depth": 0.12,
+    "return_cap": 0.25
+  },
+  "scenario_count": 256,
+  "trajectory_count": 16384,
+  "scenario_grid": {
+    "phi": [
+      0,
+      0.25,
+      0.5,
+      0.75
+    ],
+    "similarity": [
+      0,
+      0.85
+    ],
+    "speed": [
+      0.1,
+      0.8
+    ],
+    "leverage": [
+      1,
+      3
+    ],
+    "shock": [
+      0,
+      0.08
+    ],
+    "policy": [
+      "ungated",
+      "risk_only",
+      "evidence_gate",
+      "wrong_evidence"
+    ]
+  },
+  "python": "3.12.14",
+  "numpy": "2.3.5",
+  "pandas": "2.2.3",
+  "scope": "synthetic reduced-form diagnostic; not production CMTF or calibrated crisis forecast",
+  "randomization": "common innovations reused for matched scenarios; fixed trained neural experts",
+  "code_sha256": "69da447ade0a25a90cca201c1efa743616c8dcad81f7a22abccf714dca2bea19"
+}

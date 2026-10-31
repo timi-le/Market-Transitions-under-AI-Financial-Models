@@ -1,0 +1,178 @@
+\begin{abstract}
+As AI financial models control a growing share of trading activity, their decisions can change the prices, liquidity, and predictive relationships on which they depend. When does this feedback erode alpha, defined as risk-adjusted excess return after trading costs, and when does individually adaptive behavior destabilize the market? We develop a research framework connecting participation, behavioral similarity, adaptation speed, leverage, and external shocks to market transitions and recovery. Its neuro-symbolic component builds on the Causal Macro Transmission Framework (CMTF), which represents hypothesized pathways through which economic developments propagate to asset prices. Neural experts generate proposals; explicit evidence contracts constrain their eligibility; regime-conditioned routing combines admissible proposals and supports abstention.
+
+We formalize the distinction between regime confidence and causal identification and evaluate two reproducible diagnostics. Across 200 synthetic replications, posterior averaging reduces structural-coefficient mean squared error from 0.503 to 0.373 relative to hard regime selection under nominal assumptions, but its error rises to 2.890 after a misspecified regime-emission shift. A reduced-form interactive market study evaluates 256 configurations with 64 replications each. Evidence-gated policies exhibit fewer persistent price dislocations than an uncapped comparator, yet a liquidity-cap-only comparator also suppresses those events. Every policy has a negative mean net return across the tested grid. Deliberately incorrect evidence reduces exposure and losses, despite worse forecasts, demonstrating that apparent resilience can reflect withdrawal rather than superior inference.
+
+These results establish an inspectable experimental basis for studying continuous adaptation while identifying limits to performance claims. They do not estimate a real-world AI participation threshold, a calendar date for market collapse, or a verified alpha-preservation benefit. The central implication is that interpretability must expose how assumptions change orders and collective feedback, including cases where individual protection conflicts with liquidity recovery.
+\end{abstract}
+\clearpage
+\setcounter{tocdepth}{1}
+\begingroup\setlength{\parskip}{0pt}\small\tableofcontents\endgroup
+\clearpage
+
+\section{Introduction}
+Financial prediction changes character when many participants act on similar predictions. A model may learn a relationship between an economic surprise and an asset return. If many models trade that relationship simultaneously, their orders alter the available price, execution cost, and subsequent return. A relationship that was useful in a historical sample may become crowded, disappear, reverse, or survive only at a smaller position size. The research question is therefore about the joint evolution of predictive models and the market they inhabit.
+
+This paper asks three connected questions. First, under what conditions does greater participation by AI financial models change price formation and the persistence of net trading opportunities? Second, how do model similarity, adaptation speed, leverage, and liquidity interact with economic shocks to produce or amplify instability? Third, can an interpretable neuro-symbolic architecture improve adaptation without encouraging synchronized withdrawal or relocating error into its causal assumptions?
+
+The question of when a market shifts has several meanings. It may mean a change in the mechanism linking economic information to returns, a transition from independent to coordinated behavior, a deterioration in liquidity, or the crossing of a specified stress threshold. These are different outcomes. We define conditional transition surfaces in a model's parameter space rather than attempting to predict a calendar date at which AI participation will dominate financial markets. A numerical threshold is meaningful only together with the market model, participant population, event definition, and uncertainty interval that produced it.
+
+\subsection{Connection to the original CMTF work}
+The Causal Macro Transmission Framework (CMTF) starts from a practical concern: economic information reaches assets through intermediate mechanisms. An inflation surprise can affect expected policy, financing conditions, discount rates, or perceived growth, with different implications across assets and regimes. CMTF records such pathways as hypotheses and uses them to organize model proposals. The framework does not make a causal pathway true merely by expressing it as a graph.
+
+The original technical direction combined causal macro reasoning, regime inference, specialized experts, and constrained decisions. This manuscript preserves that direction and changes the unit of evaluation. In addition to asking whether one system selects useful proposals, it asks what happens when a population of systems makes and revises such selections. The architecture becomes an experimental intervention within a market environment. Public diagnostics deliberately use simple mechanisms whose ground truth is available; they do not expose or claim to replicate a proprietary deployment.
+
+The proposed general architecture contains neural representation and proposal generation, an explicit causal model, expert eligibility checks, regime-conditioned routing, and a constrained action layer. The implementation released here covers a small declared-evidence router, a structural-coefficient diagnostic, and a reduced-form market-feedback simulator. These levels are kept separate throughout.
+
+\subsection{Contributions and scope}
+The first contribution is a precise evidence contract separating information availability, identification assumptions, mechanism applicability, uncertainty, and provenance. This distinction prevents a confident regime label from being treated as proof of a causal effect.
+
+The second contribution is an experimental design that treats participation, similarity, adaptation rate, and risk controls as separate interventions. A liquidity-cap-only comparator is necessary because an apparent advantage of a composite architecture may come from ordinary risk reduction.
+
+The third contribution is a reproducible set of negative and conditional findings. Nominal regime averaging can help structural estimation, but misspecified regimes can make it worse than pooling. In the market diagnostic, lower losses and fewer dislocations do not establish more accurate causal reasoning or preserved alpha. A deliberately wrong mechanism can appear financially safer by causing more withdrawal.
+
+The fourth contribution is a validation protocol connecting model explanations to replayable evidence and interventions. Interpretability is useful when a reviewer can inspect what was available, which assumption was active, why a proposal was admitted, and what order changed. A fluent narrative alone does not provide this evidence.
+
+\begin{table}[htbp]\centering\small
+\begin{tabularx}{\linewidth}{p{.22\linewidth}XX}
+\toprule Component & Completed in this release & Outside the demonstrated claim\\\midrule
+Evidence contract & Typed checks, signed routing, abstention, tests & Automated proof that economic assumptions hold\\
+Structural diagnostic & Four settings, five estimators, 200 replications & Identification of real macroeconomic effects\\
+Market interaction & 256 configurations, endogenous price and depth proxies & Calibrated exchange or economy-wide crisis forecast\\
+Neural experts & Fixed hidden features with fitted output weights & Large pretrained model integration or transformer-internal MoE\\
+Alpha and recovery & Net-return and stress diagnostics; explicit alpha protocol & Positive risk-adjusted alpha or optimal trading frequency\\
+Hardware & Execution partition and verification requirements & Synthesized FPGA or measured speedup\\
+\bottomrule
+\end{tabularx}
+\caption{Claim boundaries. Architectural intent and executed evidence have different roles.}
+\end{table}
+
+\section{Related research and positioning}
+Performative prediction formalizes settings in which a deployed prediction rule changes the distribution of the outcome it predicts \cite{perdomo}. This motivates evaluating adaptation in an interactive environment rather than relying exclusively on a frozen historical dataset. Our interest is a market-specific implementation in which orders, costs, and withdrawal create feedback. The present diagnostics do not establish a new general convergence theorem for performative prediction.
+
+Conditional computation through mixtures of experts offers specialized components and input-dependent routing \cite{shazeer}. We use this idea at the decision-interface level: eligibility is evaluated before expert proposals influence the action. This is distinct from training a sparse internal layer of a large neural network. The demonstration networks are small, and the routing interface is external to them.
+
+Causal-inference tooling distinguishes assumptions, identification, estimation, and robustness checks \cite{dowhy}. CMTF adopts that separation as an architectural requirement. A symbolic gate can check whether a record states a required assumption and whether a registered analysis approves it. It cannot infer the truth of an untestable assumption from a Boolean field.
+
+ABIDES demonstrates an event-driven exchange simulation approach with explicit market participants and communication delays \cite{abides}. Such a simulator is a natural next validation environment. Our reduced-form implementation is easier to inspect, but lacks order queues, cancellation dynamics, strategic market makers, venue routing, and calibrated latency. Its results are conditional numerical examples, not substitutes for exchange-level experiments.
+
+\input{manuscript/sections/related_extension.tex}
+
+These connections constrain the novelty claim. The defensible contribution is the joint specification and evaluation of evidence eligibility, regime-sensitive proposals, and market feedback. Establishing a stronger algorithmic contribution requires competitive learned baselines, several independent environments, and experiments that isolate information quality from reduced exposure.
+
+\section{Research questions and operational definitions}
+\textbf{Notation convention.} Scalars are single numbers; bold symbols are vectors or matrices. Subscript $t$ indexes time, $i$ participants, $k$ states or experts as specified, and $j$ components. A hat denotes an estimate. The symbol $\in$ means belongs to; $\R^d$ is the set of real vectors with $d$ entries. $\E$ means expected value, $\operatorname{Var}$ variance, and $\operatorname{Cov}$ covariance. A summation $\sum$ adds indexed quantities; $\top$ transposes a vector or matrix; a norm $\|\cdot\|$ measures size in a specified geometry. Multiplication of a transposed vector by another compatible vector sums their elementwise products. Appendix A gives object types and the derivation appendices translate the equations and code step by step.
+
+\subsection{Participation, similarity, and adaptation}
+Let $\phi\in[0,1]$ (phi) denote the participation parameter. In a calibrated study it would represent a measured capital or activity share. In the released simulator it is a coupling coefficient that increases the effect of model order flow and decreases background restoring pressure. It is not an empirically estimated share of global assets.
+
+Let $\rho\in[0,1]$ (rho) denote behavioral similarity. The implemented intervention correlates observation errors. It does not reproduce every source of similarity, such as shared weights, training data, risk constraints, or execution algorithms. Let $\eta\in(0,1]$ (eta) denote the fraction of the distance to a target position traversed per step. It measures execution adaptation, not neural retraining frequency. Let $\ell>0$ (ell) denote target leverage before liquidity adjustment.
+
+A full study should separately vary observation frequency, inference latency, target refresh frequency, execution speed, and learning rate. Calling all five adaptation speed would obscure why a policy succeeds or destabilizes the market. The current simulator isolates target-position adjustment while holding forecast parameters fixed.
+
+\subsection{Alpha is not raw profit or accuracy}
+For an investable strategy, define a benchmark-adjusted return model
+\begin{equation}
+r^{\mathrm{net}}_t-r^f_t=\alpha+\boldsymbol\beta^\top\mathbf f_t+\varepsilon_t.
+\label{eq:alpha}
+\end{equation}
+Here $r^{\mathrm{net}}_t$ is return after specified costs, $r^f_t$ the financing or risk-free comparator, $\mathbf f_t\in\R^d$ a prespecified vector of tradable risk-factor returns, $\boldsymbol\beta\in\R^d$ factor exposure, $\alpha$ (alpha) the conditional intercept, and $\varepsilon_t$ (epsilon) residual variation. Benchmark, sampling interval, estimation window, and cost convention are part of the estimand.
+
+\plain{A profitable strategy can simply be taking rewarded market risk. Alpha asks whether the return exceeds what the chosen risk exposures explain. Prediction accuracy measures forecast quality, not the amount earned after costs.}
+
+We do not fit Equation~\eqref{eq:alpha} to the released trajectories and label the intercept investment alpha. The simulator has no calibrated asset-pricing factor system or financing market. We report net wealth changes and forecast errors. The appendix specifies what a richer experiment must measure.
+
+\subsection{Instability, crashes, and recovery}
+A market crash is not defined by a poor return in one participant's account. Our primary model-specific stress event is an absolute log-price displacement of at least $0.10$ from the latent fundamental proxy for five consecutive scored steps. It includes upward and downward dislocations. We additionally report persistent downside displacement and persistent price drawdown of at least 15\%. Neither is automatically an economy-wide crash.
+
+Recovery is multidimensional. Price can approach its fundamental proxy while liquidity remains thin. The implemented diagnostic requires both displacement below $0.02$ and normalized depth at least $0.8$ for five consecutive steps after the designated shock time. Paths that do not meet this condition within the horizon are right-censored, not assigned an invented recovery time.
+
+Causation requires an intervention. Matched synthetic worlds can differ only in a specified participant policy or shock while sharing innovations. Such comparisons identify effects within the written simulator. They do not identify the historical effect of AI participation in real markets, where adoption, volatility, liquidity, and regulation co-evolve.
+
+\subsection{Falsifiable hypotheses}
+H1 states that greater coupling, correlated behavior, and faster adjustment can jointly increase endogenous dislocation; participation alone need not destabilize. H2 states that gating can improve outcomes when its information checks are informative but can degrade them under misspecification. H3 states that reduced individual risk can coincide with slower collective liquidity recovery. H4 states that an apparent benefit of interpretability may disappear against an exposure-matched control.
+
+The experiments address restricted versions of H1 to H3 and motivate H4. They do not complete an exposure-matched attribution study. No threshold, policy, or endpoint was preregistered before this manuscript development; parameter choices are exploratory.
+
+\section{CMTF as an evidence-gated neuro-symbolic architecture}
+\subsection{Mechanisms, regimes, and information sets}
+Let $\mathcal F_t$ denote information actually available before decision $t$. An observation belongs to $\mathcal F_t$ only after release and ingestion, including processing delay. Event time, publication time, and model-availability time may differ. Later revisions must not overwrite the version used for an earlier decision.
+
+For economic variables $\mathbf V_t=(V_{1t},\ldots,V_{mt})$, a candidate structural model writes
+\begin{equation}
+V_{jt}=f_{j,z_t}\bigl(\mathrm{pa}(V_{jt}),U_{jt}\bigr),\quad j=1,\ldots,m.
+\label{eq:scm}
+\end{equation}
+The function $f_{j,z_t}$ is a hypothesized mechanism in regime $z_t$; $\mathrm{pa}(V_{jt})$ denotes parent variables; $U_{jt}$ is an unobserved disturbance. A graph summarizes dependencies. Feedback across time is represented by lagged edges. Same-time cyclic models need simultaneous-equation or equilibrium semantics rather than being called directed acyclic graphs.
+
+A regime posterior $q_t(k)=P(z_t=k\mid\mathcal F_t)$ describes state uncertainty under a model. It does not certify causal identification. If an effect $\tau_k$ is inactive in one state, setting $\tau_k=0$ does not set $q_t(k)=0$. All posterior probabilities still sum to one.
+
+\subsection{Typed evidence contracts}
+For expert $k$, define a conceptual evidence record
+\[
+e_{kt}=(\mathcal T_k,\mathcal A_k,\mathcal G_k,v_k,a_k,b_k,
+\widehat\tau_{kt},\mathcal U_{kt},s_{kt},d_{kt},\pi_k).
+\]
+The tuple contains target estimand $\mathcal T_k$, assumptions $\mathcal A_k$, graph version $\mathcal G_k$, data version $v_k$, availability and expiry times $a_k,b_k$, effect estimate $\widehat\tau_{kt}$, uncertainty descriptor $\mathcal U_{kt}$, score $s_{kt}$, direction $d_{kt}\in\{-1,0,1\}$, and provenance $\pi_k$. These are heterogeneous fields, not one numerical vector.
+
+A registered evaluator produces eligibility $g_{kt}\in\{0,1\}$. Conditions include $a_k\le t\le b_k$, valid numeric values, provenance, compatible action definitions, and declared applicability. Identification status should link to an analysis and assumptions, not a self-certified natural-language assertion.
+
+\plain{The neural component proposes a trade or forecast. The symbolic component checks when the information was available, whether the proposal is allowed, and whether its assumptions are documented. A persuasive proposal can still fail admission.}
+
+The public router implements a subset of the contract. Its \code{identified} field is supplied by the caller, not calculated by causal discovery. The market simulator uses timeliness, regime confidence, and lagged forecast error as eligibility proxies, narrower than the full contract.
+
+\subsection{Direction-aware routing and abstention}
+For eligible proposals define
+\begin{equation}
+L_{kt}=s_{kt}+d_{kt}\widehat\tau_{kt}-u_{kt},\qquad
+w_{kt}=\frac{g_{kt}\exp(L_{kt}-M_t)}{\sum_j g_{jt}\exp(L_{jt}-M_t)}.
+\label{eq:router}
+\end{equation}
+Here $u_{kt}\ge0$ is a penalty, $M_t$ the maximum eligible logit, and $w_{kt}$ the normalized weight. Scores, effects, and penalties require a declared common scale. If no proposal is eligible, the router abstains; it does not divide by zero or silently reactivate rejected experts.
+
+Direction matters. A negative expected price response supports a short proposal more than a long proposal, all else equal. Multiplying direction-free confidence by a macro scalar can wrongly penalize both. A signed score is not expected profit until size, horizon, impact, and costs are specified.
+
+Abstention also needs an operational definition. Rejecting a new proposal differs from flattening an existing position. Here ineligibility sets target signal to zero and positions move toward zero at rate $\eta$, potentially creating synchronized flow. Holding, canceling, reducing, and flattening should be separate logged actions.
+
+\subsection{Interpretability as a market variable}
+Interpretability can influence behavior. If many models use the same mechanism registry and uncertainty threshold, a shared explanation can trigger simultaneous withdrawal. Different credible hypotheses can instead diversify responses. Evidence conventions are therefore part of the population.
+
+A useful decision record contains the proposal set, eligibility reasons, posterior, weights, position before and after, intended order, accepted order, and fill. A replay reconstructs the decision from frozen versions. A textual causal chain remains a hypothesis record unless tied to a formal estimand and identification analysis.
+\input{manuscript/figures/architecture.tex}
+
+\section{Conditional theoretical implications}
+\subsection{A contraction condition for adaptation}
+Consider a deterministic local approximation with model parameters $\boldsymbol\theta\in\R^d$ and population update map $T:\R^d\to\R^d$. Suppose $T$ has Lipschitz constant $L<1$ in a specified norm. The damped update
+\[
+\boldsymbol\theta_{t+1}=(1-\eta)\boldsymbol\theta_t+\eta T(\boldsymbol\theta_t)
+\]
+has contraction factor at most $1-\eta+\eta L$ for $0<\eta\le1$.
+\begin{proof}
+The triangle inequality bounds the difference between updates of $\mathbf x$ and $\mathbf y$ by $(1-\eta)\|\mathbf x-\mathbf y\|+\eta\|T(\mathbf x)-T(\mathbf y)\|$, at most $(1-\eta+\eta L)\|\mathbf x-\mathbf y\|$. The coefficient is below one.
+\end{proof}
+If $L\ge1$, this bound does not establish contraction for any positive $\eta$. It does not prove divergence either. Noise, delay, discrete eligibility thresholds, and liquidity constraints require additional analysis. We do not estimate $L$ for a real market.
+
+\subsection{Synchronized flow and market sensitivity}
+Suppose $N$ order innovations have variance $\sigma^2$ (sigma squared) and common pairwise correlation $\rho$. Then
+\begin{equation}
+\operatorname{Var}\!\left(\frac1N\sum_{i=1}^N u_i\right)
+=\frac{\sigma^2}{N}\{1+(N-1)\rho\}.
+\label{eq:correlation}
+\end{equation}
+Independence reduces variability at rate $1/N$; positive common correlation leaves limiting variance $\rho\sigma^2$. More models need not diversify aggregate flow. This is conditional, not an assertion that all AI financial models are similar.
+
+Under local linear impact $\Delta p=\lambda\phi\bar u/D$, with depth $D>0$ and impact coefficient $\lambda$ (lambda), flow-induced variance is multiplied by $(\lambda\phi/D)^2$. Correlation and thin depth jointly increase sensitivity. The simulator develops this mechanism dynamically; it does not estimate the identity from an exchange.
+
+\subsection{A limited alpha-decay model}
+Let gross margin per unit be $b(n)=b_0-cn$, with competing capital $n$ and crowding sensitivity $c>0$. For cost $k\ge0$, net margin is $a(n)=b_0-cn-k$. A zero-margin crossing occurs at $n^\star=(b_0-k)/c$ when $b_0>k$. This follows from a stipulated linear relationship; it is not a universal threshold or an estimate from this study.
+
+Mechanism-conditioned adaptation could change $b_0$, $c$, or costs through selective trading. It could also increase crowding if many systems switch together. Combating alpha decay must be tested under matched capital, risk, costs, and information, not inferred from changing weights alone.
+
+\begin{proposition}
+A gate based on declared assumptions cannot guarantee correct decisions if false and true declarations are observationally indistinguishable at its interface.
+\end{proposition}
+\begin{proof}
+Two environments can supply identical records but differ in an unobserved mechanism. A deterministic gate makes the same admission decision in both. If the effect changes sign between them, admission cannot certify the correct sign in both. Randomization cannot provide certainty either.
+\end{proof}
+This information limitation motivates sensitivity analysis and outcome checks without making them infallible.
+

@@ -1,0 +1,11 @@
+{
+  "scenario_count": 256,
+  "trajectory_count": 16384,
+  "scope": "synthetic reduced-form diagnostic; not production CMTF or calibrated crisis forecast"
+}
+                net_return  max_drawdown  minimum_depth  stress_event  downside_dislocation  price_drawdown_event  market_drawdown  unrecovered  forecast_mse  coverage  order_synchrony      cost   turnover  clip_count
+policy                                                                                                                                                                                                                   
+evidence_gate    -0.068056     -0.072281       0.733107      0.000000              0.000000              0.002686        -0.065466     0.100342      0.425131  0.854840         0.824177  0.077989  88.442684    0.000000
+risk_only        -0.072793     -0.077149       0.727310      0.000000              0.000000              0.004639        -0.066252     0.113525      0.425131  0.854840         0.865027  0.082292  91.234209    0.000000
+ungated          -0.080017     -0.087568       0.714449      0.019287              0.013428              0.078857        -0.080236     0.008545      0.425131  0.854840         0.831510  0.090585  83.835662    0.041016
+wrong_evidence   -0.028012     -0.029162       0.794832      0.000000              0.000000              0.000488        -0.060098     0.000000      2.961691  0.173533         0.708029  0.017058  22.098510    0.000000
